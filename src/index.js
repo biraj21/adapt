@@ -64,7 +64,7 @@ app.post("/execute", async (req, res, next) => {
 
       // now build the docker image for the given function which can the be run
       console.log("building docker image for function", id);
-      const { stdout, stderr } = await execPromisified(`sudo docker build -f ${newDockerfilePath} -t ${id}`);
+      const { stdout, stderr } = await execPromisified(`sudo docker build -f ${newDockerfilePath} -t ${id} /`);
       console.log("stdout:", stdout);
       console.log("stderr:", stderr);
     }
