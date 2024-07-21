@@ -1,11 +1,16 @@
+import path from "node:path";
+
 import dotenv from "dotenv";
 import express from "express";
+import multer from "multer";
 
 dotenv.config();
 
 const app = express();
 
-const upload = multer({ dest: process.env.FUNCTIONS_DIR || "./uploads" });
+const functionUploadsDir = process.env.FUNCTIONS_DIR || "./function-uploads";
+
+const upload = multer({ dest: functionUploadsDir });
 
 app.use(express.json());
 
@@ -14,6 +19,7 @@ app.post("/upload", upload.single("function"), async (req, res, next) => {
     res.json({
       success: true,
       message: "uploaded",
+      id: req.file.filename,
     });
   } catch (err) {
     next(err);
@@ -25,7 +31,14 @@ app.post("/execute", async (req, res, next) => {
     // function id
     const { id } = req.body;
 
-    // spin up focker to run the function with the given id
+    const functionFilePath = path.resolve(functionUploadsDir, id);
+
+    // spin up docker container to run the function with the given id
+
+    res.json({
+      success: true,
+      functionFilePath, // for testing
+    });
   } catch (err) {
     next(err);
   }
